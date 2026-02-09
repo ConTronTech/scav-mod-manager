@@ -1,0 +1,35 @@
+{
+    "id": "myitem",
+    "name": "My Custom Item",
+    "description": "Description here",
+    "basePrefab": "machete",
+
+    "weight": 1.0,
+    "value": 50,
+    "category": "tool",
+    "tags": "tool",
+    "intRequirement": 0,
+
+    "damage": 100,
+    "structuralDamage": 100,
+    "knockback": 200,
+    "cooldown": 0.3,
+    "cooldownMult": 0.5,
+    "distance": 4.0,
+    "staminaUse": 0.3,
+    "piercing": false,
+    "volume": 0.3,
+    "rotation": 15.5,
+
+    "unbreakable": false,
+    "cuttingQuality": 0,
+
+    "sprite": "sprite.png",
+    "spriteWidth": 16,
+    "spriteHeight": 16,
+    "texWidth": 16,
+    "texHeight": 16,
+
+    "isWeapon": true,
+    "hasUseAction": true
+}
