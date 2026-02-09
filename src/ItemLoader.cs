@@ -112,31 +112,74 @@ public static class ItemLoader
         item.id = GetJsonString(json, "id");
         item.name = GetJsonString(json, "name");
         item.description = GetJsonString(json, "description");
-        item.basePrefab = GetJsonString(json, "basePrefab");
+        item.basePrefab = GetJsonString(json, "cloneFrom");
+        if (string.IsNullOrEmpty(item.basePrefab))
+            item.basePrefab = GetJsonString(json, "basePrefab"); // legacy compat
         if (string.IsNullOrEmpty(item.basePrefab)) item.basePrefab = "machete";
 
-        item.weight = GetJsonFloat(json, "weight", 1f);
-        item.value = GetJsonInt(json, "value", 10);
+        // General properties
         item.category = GetJsonString(json, "category");
-        if (string.IsNullOrEmpty(item.category)) item.category = "tool";
+        if (string.IsNullOrEmpty(item.category)) item.category = "custom";
+        item.weight = GetJsonFloat(json, "weight", 1f);
+        item.value = GetJsonInt(json, "value", 0);
         item.tags = GetJsonString(json, "tags");
-        item.intRequirement = GetJsonInt(json, "intRequirement", 0);
+        item.slotRotation = GetJsonFloat(json, "slotRotation", 0f);
+        item.rotSpeed = GetJsonFloat(json, "rotSpeed", 0f);
 
-        // Combat
-        item.damage = GetJsonFloat(json, "damage", 50f);
-        item.structuralDamage = GetJsonFloat(json, "structuralDamage", 50f);
-        item.knockback = GetJsonFloat(json, "knockback", 100f);
-        item.cooldown = GetJsonFloat(json, "cooldown", 0.3f);
-        item.cooldownMult = GetJsonFloat(json, "cooldownMult", 0.5f);
-        item.distance = GetJsonFloat(json, "distance", 4f);
-        item.staminaUse = GetJsonFloat(json, "staminaUse", 0.3f);
+        // Usability flags
+        item.usable = GetJsonBool(json, "usable", false);
+        item.usableWithLMB = GetJsonBool(json, "usableWithLMB", false);
+        item.usableOnLimb = GetJsonBool(json, "usableOnLimb", false);
+        item.autoAttack = GetJsonBool(json, "autoAttack", false);
+        item.onlyHoldInHands = GetJsonBool(json, "onlyHoldInHands", false);
+
+        // Combat / Weapon
+        item.isWeapon = GetJsonBool(json, "isWeapon", false);
+        item.damage = GetJsonFloat(json, "damage", 0f);
+        item.structuralDamage = GetJsonFloat(json, "structuralDamage", 0f);
+        item.knockback = GetJsonFloat(json, "knockBack", 0f);
+        if (item.knockback == 0f) item.knockback = GetJsonFloat(json, "knockback", 0f); // alt casing
+        item.cooldown = GetJsonFloat(json, "cooldown", 0f);
+        item.attackCooldownMult = GetJsonFloat(json, "attackCooldownMult", 1f);
+        item.distance = GetJsonFloat(json, "distance", 1f);
+        item.staminaUse = GetJsonFloat(json, "staminaUse", 0f);
         item.piercing = GetJsonBool(json, "piercing", false);
-        item.volume = GetJsonFloat(json, "volume", 0.3f);
-        item.rotation = GetJsonFloat(json, "rotation", 15.5f);
+        item.rotateAmount = GetJsonFloat(json, "rotateAmount", 0f);
+        item.volume = GetJsonFloat(json, "volume", 0f);
+        item.physicalSwing = GetJsonBool(json, "physicalSwing", true);
+        item.doAttackAnim = GetJsonBool(json, "doAttackAnim", true);
+        item.metalMoreDamage = GetJsonBool(json, "metalMoreDamage", false);
+        item.attackAnim = GetJsonString(json, "attackAnim");
+        if (string.IsNullOrEmpty(item.attackAnim)) item.attackAnim = "SwingAnim";
+        item.swingSounds = GetJsonString(json, "swingSounds");
+        if (string.IsNullOrEmpty(item.swingSounds)) item.swingSounds = "BSSwing1,BSSwing2,BSSwing3,BSSwing4";
 
-        // Durability
-        item.unbreakable = GetJsonBool(json, "unbreakable", false);
-        item.cuttingQuality = GetJsonFloat(json, "cuttingQuality", 0f);
+        // Food / Consumable
+        item.isFood = GetJsonBool(json, "isFood", false);
+        item.foodValue = GetJsonFloat(json, "foodValue", 0f);
+        item.waterValue = GetJsonFloat(json, "waterValue", 0f);
+
+        // Wearable / Armor
+        item.wearable = GetJsonBool(json, "wearable", false);
+        item.desiredWearLimb = GetJsonString(json, "desiredWearLimb");
+        item.wearSlotId = GetJsonString(json, "wearSlotId");
+        item.wearableArmor = GetJsonFloat(json, "wearableArmor", 0f);
+        item.wearableIsolation = GetJsonFloat(json, "wearableIsolation", 0f);
+        item.wearableHitDurabilityLossMultiplier = GetJsonFloat(json, "wearableHitDurabilityLossMultiplier", 0f);
+        item.wearableVisualOffset = GetJsonInt(json, "wearableVisualOffset", 0);
+        item.jumpHeightMultChange = GetJsonFloat(json, "jumpHeightMultChange", 0f);
+
+        // Decay & Condition
+        item.destroyAtZeroCondition = GetJsonBool(json, "destroyAtZeroCondition", false);
+        item.scaleWeightWithCondition = GetJsonBool(json, "scaleWeightWithCondition", false);
+        item.decayInfo = GetJsonInt(json, "decayInfo", 0);
+        item.decayMinutes = GetJsonFloat(json, "decayMinutes", 0f);
+
+        // Crafting & Economy
+        item.combineable = GetJsonBool(json, "combineable", false);
+        item.ignoreDepression = GetJsonBool(json, "ignoreDepression", false);
+        item.intRequirement = GetJsonInt(json, "intRequirement", 0);
+        item.qualities = GetJsonString(json, "qualities");
 
         // Sprite — check for sprite file in the item folder
         string spriteFile = GetJsonString(json, "sprite");
@@ -186,10 +229,6 @@ public static class ItemLoader
         item.lightColorR = GetJsonFloat(json, "lightColorR", -1f);
         item.lightColorG = GetJsonFloat(json, "lightColorG", -1f);
         item.lightColorB = GetJsonFloat(json, "lightColorB", -1f);
-
-        // Flags
-        item.isWeapon = GetJsonBool(json, "isWeapon", true);
-        item.hasUseAction = GetJsonBool(json, "hasUseAction", true);
 
         return item;
     }
@@ -263,28 +302,50 @@ public static class ItemLoader
         info.weight = item.weight;
         info.value = item.value;
         info.tags = item.tags;
+        info.slotRotation = item.slotRotation;
+        info.rotSpeed = item.rotSpeed;
         info.rec = new Recognition(item.intRequirement);
 
-        // Must set usable + usableWithLMB for useAction to fire
-        // autoAttack enables hold-LMB auto-swing
-        if (item.hasUseAction)
-        {
-            info.usable = true;
-            info.usableWithLMB = true;
-            info.autoAttack = item.autoAttack;
-        }
+        // Usability flags
+        info.usable = item.usable;
+        info.usableWithLMB = item.usableWithLMB;
+        info.usableOnLimb = item.usableOnLimb;
+        info.autoAttack = item.autoAttack;
+        info.onlyHoldInHands = item.onlyHoldInHands;
 
-        if (item.cuttingQuality > 0)
+        // Wearable
+        info.wearable = item.wearable;
+        if (!string.IsNullOrEmpty(item.desiredWearLimb)) info.desiredWearLimb = item.desiredWearLimb;
+        if (!string.IsNullOrEmpty(item.wearSlotId)) info.wearSlotId = item.wearSlotId;
+        info.wearableArmor = item.wearableArmor;
+        info.wearableIsolation = item.wearableIsolation;
+        info.wearableHitDurabilityLossMultiplier = item.wearableHitDurabilityLossMultiplier;
+        info.wearableVisualOffset = item.wearableVisualOffset;
+        info.jumpHeightMultChange = item.jumpHeightMultChange;
+
+        // Decay & Condition
+        info.destroyAtZeroCondition = item.destroyAtZeroCondition;
+        info.scaleWeightWithCondition = item.scaleWeightWithCondition;
+        info.decayInfo = (byte)item.decayInfo;
+        info.decayMinutes = item.decayMinutes;
+
+        // Crafting
+        info.combineable = item.combineable;
+        info.ignoreDepression = item.ignoreDepression;
+
+        // Qualities
+        if (!string.IsNullOrEmpty(item.qualities))
         {
             info.qualities = new List<CraftingQuality>();
-            info.qualities.Add(new CraftingQuality("cutting", item.cuttingQuality));
+            foreach (var q in item.qualities.Split(','))
+            {
+                string trimmed = q.Trim();
+                if (trimmed.Length > 0) info.qualities.Add(new CraftingQuality(trimmed));
+            }
         }
 
-        var setTagsMethod = typeof(ItemInfo).GetMethod("SetTags", BindingFlags.Public | BindingFlags.Instance);
-        if (setTagsMethod != null)
-            setTagsMethod.Invoke(info, null);
-
-        if (item.hasUseAction)
+        // Use action — weapons get attack handler, food gets food handler
+        if (item.isWeapon && item.usable)
         {
             try
             {
@@ -303,7 +364,29 @@ public static class ItemLoader
             }
             catch (Exception e)
             {
-                Debug.LogError("[ItemLoader] Failed to set useAction for " + item.id + ": " + e.Message);
+                Debug.LogError("[ItemLoader] Failed to set weapon useAction for " + item.id + ": " + e.Message);
+            }
+        }
+        else if (item.isFood && item.usable)
+        {
+            try
+            {
+                var useActionField = typeof(ItemInfo).GetField("useAction", BindingFlags.Public | BindingFlags.Instance);
+                if (useActionField != null)
+                {
+                    var delegateType = useActionField.FieldType;
+                    var foodMethod = typeof(ItemLoader).GetMethod("GenericFoodHandler",
+                        BindingFlags.Public | BindingFlags.Static);
+                    if (foodMethod != null)
+                    {
+                        var del = Delegate.CreateDelegate(delegateType, foodMethod);
+                        useActionField.SetValue(info, del);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.LogError("[ItemLoader] Failed to set food useAction for " + item.id + ": " + e.Message);
             }
         }
 
@@ -329,24 +412,30 @@ public static class ItemLoader
             atkInfo.structuralDamage = def.structuralDamage;
             atkInfo.knockBack = def.knockback;
             atkInfo.cooldown = def.cooldown;
-            atkInfo.attackCooldownMult = def.cooldownMult;
+            atkInfo.attackCooldownMult = def.attackCooldownMult;
             atkInfo.distance = def.distance;
             atkInfo.staminaUse = def.staminaUse;
             atkInfo.piercing = def.piercing;
             atkInfo.volume = def.volume;
-            atkInfo.rotateAmount = def.rotation;
+            atkInfo.rotateAmount = def.rotateAmount;
+            atkInfo.physicalSwing = def.physicalSwing;
+            atkInfo.doAttackAnim = def.doAttackAnim;
+            atkInfo.metalMoreDamage = def.metalMoreDamage;
 
-            // Load swing animation (same as machete uses)
-            atkInfo.attackAnim = Resources.Load<GameObject>("SwingAnim");
+            // Load attack animation
+            atkInfo.attackAnim = Resources.Load<GameObject>(def.attackAnim);
 
-            // Set swing sounds
-            atkInfo.swingSounds = new string[] { "BSSwing1", "BSSwing2", "BSSwing3", "BSSwing4" };
+            // Set swing sounds from comma-separated string
+            if (!string.IsNullOrEmpty(def.swingSounds))
+                atkInfo.swingSounds = def.swingSounds.Split(',');
+            else
+                atkInfo.swingSounds = new string[] { "BSSwing1", "BSSwing2", "BSSwing3", "BSSwing4" };
 
             // Body.Attack(AttackInfo, int) — second arg is hand index (0)
             bool hit = body.Attack(atkInfo, 0);
 
-            // Degrade condition on hit (skip if unbreakable)
-            if (hit && !def.unbreakable)
+            // Degrade condition on hit
+            if (hit && def.rotSpeed > 0)
             {
                 weaponItem.condition -= 0.005f;
             }
@@ -354,6 +443,54 @@ public static class ItemLoader
         catch (Exception e)
         {
             Debug.LogError("[ItemLoader] Attack error: " + e.Message + "\n" + e.StackTrace);
+        }
+    }
+
+    // === FOOD HANDLER ===
+    // Signature must match ItemInfo.Use delegate: void(Body, Item)
+    public static void GenericFoodHandler(Body body, Item foodItem)
+    {
+        try
+        {
+            string itemId = foodItem.id;
+            if (!customItems.ContainsKey(itemId)) return;
+            var def = customItems[itemId];
+
+            // Apply food/water values via Body fields
+            if (def.foodValue != 0f)
+            {
+                var foodField = typeof(Body).GetField("food", BindingFlags.Public | BindingFlags.Instance);
+                if (foodField != null)
+                {
+                    float current = (float)foodField.GetValue(body);
+                    foodField.SetValue(body, Mathf.Clamp(current + def.foodValue, 0f, 100f));
+                }
+            }
+            if (def.waterValue != 0f)
+            {
+                var waterField = typeof(Body).GetField("water", BindingFlags.Public | BindingFlags.Instance);
+                if (waterField != null)
+                {
+                    float current = (float)waterField.GetValue(body);
+                    waterField.SetValue(body, Mathf.Clamp(current + def.waterValue, 0f, 100f));
+                }
+            }
+
+            // Destroy the item after use (consume it)
+            if (def.destroyAtZeroCondition)
+            {
+                foodItem.condition = 0f;
+            }
+            else
+            {
+                UnityEngine.Object.Destroy(foodItem.gameObject);
+            }
+
+            Debug.Log("[ItemLoader] Used food: " + def.name + " (food:" + def.foodValue + " water:" + def.waterValue + ")");
+        }
+        catch (Exception e)
+        {
+            Debug.LogError("[ItemLoader] Food error: " + e.Message + "\n" + e.StackTrace);
         }
     }
 
