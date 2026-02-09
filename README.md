@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🔧 Scav Mod Manager
+# Scav Mod Manager
 
 ### A mod manager & custom item framework for Scav Prototype: Casualties Unknown
 
@@ -16,20 +16,20 @@
 
 ---
 
-## ✨ Features
+## Features
 
-- 🎮 **In-game mod menu** — Press `M` to open
-- 📦 **Item spawner** — Spawn any of the 265 vanilla items or your custom ones
-- ❤️ **Player controls** — Health, hunger, thirst, stamina, XP
-- 🗺️ **World radar** — Enemy, trader, and survivor detection
-- ⚡ **Cheats** — God mode, infinite stamina, speed hack
-- 📋 **Live log viewer** — Color-coded game logs with search
-- 🔧 **JSON item system** — Add items with just a JSON file + sprite
-- 🔄 **Hot reload** — Press `F5` to load new items without restarting
+-  **In-game mod menu** — Press `M` to open
+-  **Item spawner** — Spawn any of the 265 vanilla items or your custom ones
+-  **Player controls** — Health, hunger, thirst, stamina, XP
+-  **World radar** — Enemy, trader, and survivor detection
+-  **Cheats** — God mode, infinite stamina, speed hack
+-  **Live log viewer** — Color-coded game logs with search
+-  **JSON item system** — Add items with just a JSON file + sprite
+-  **Hot reload** — Press `F5` to load new items without restarting
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### 1. Download
 
@@ -38,28 +38,28 @@ Grab the latest zip from [**Releases**](../../releases/latest).
 ### 2. Install
 
 ```
-📁 CasualtiesUnknownDemo/
-└── 📁 CasualtiesUnknown_Data/
-    ├── 📁 Managed/
-    │   ├── 📄 Assembly-CSharp.dll   ← replace (back up original first!)
-    │   └── 📄 ModManager.dll        ← add this
-    └── 📁 mods/
-        └── 📁 items/                ← add this folder
-            ├── 📁 _TEMPLATE/
-            ├── 📁 plasticfork/
-            ├── 📁 tastelesscube/
-            └── 📁 railwaylight/
+CasualtiesUnknownDemo/
+└── CasualtiesUnknown_Data/
+    ├── Managed/
+    │   ├── Assembly-CSharp.dll   ← replace (back up original first!)
+    │   └── ModManager.dll        ← add this
+    └── mods/
+        └── items/                ← add this folder
+            ├── _TEMPLATE/
+            ├── plasticfork/
+            ├── tastelesscube/
+            └── railwaylight/
 ```
 
 ### 3. Play
 
 Launch the game. Press **M** for the mod menu. Press **F5** to hot reload mods.
 
-> ⚠️ **Always back up your original `Assembly-CSharp.dll` before replacing it!**
+> **Always back up your original `Assembly-CSharp.dll` before replacing it!**
 
 ---
 
-## 🔧 Creating Custom Items
+## Creating Custom Items
 
 ### Step by step
 
@@ -143,21 +143,21 @@ Launch the game. Press **M** for the mod menu. Press **F5** to hot reload mods.
 | `waterbottle` | Liquid containers |
 | `pistol` | Firearms |
 
-> 📖 See [`item_json_reference.txt`](item_json_reference.txt) for the **complete list** of every supported field — weapons, armor, wearables, food, lights, decay, crafting, and more.
+> See [`item_json_reference.txt`](item_json_reference.txt) for the **complete list** of every supported field — weapons, armor, wearables, food, lights, decay, crafting, and more.
 
 ---
 
-## 📦 Included Example Items
+## Included Example Items
 
 | Item | Type | Description |
 |:-----|:-----|:------------|
-| 🍴 `plasticfork` | Weapon | Absurdly powerful fork (999,999 damage) |
-| 🧊 `tastelesscube` | Food | Mysterious food cube |
-| 🔴 `railwaylight` | Light | Red 360° railway signal light |
+| `plasticfork` | Weapon | Absurdly powerful fork (999,999 damage) |
+| `tastelesscube` | Food | Mysterious food cube |
+| `railwaylight` | Light | Red 360° railway signal light |
 
 ---
 
-## 🏗️ How It Works
+## How It Works
 
 The mod system injects **4 hooks** into `Assembly-CSharp.dll` using [Mono.Cecil](https://github.com/jbevain/cecil):
 
@@ -172,7 +172,7 @@ All items are **pure data** (JSON + sprite) loaded at runtime. No recompilation 
 
 ---
 
-## 🛠️ Building From Source
+## Building From Source
 
 <details>
 <summary>Click to expand</summary>
@@ -213,7 +213,7 @@ bash build.sh
 
 ---
 
-## ⚠️ Compatibility
+## Compatibility
 
 | | |
 |:--|:--|
@@ -225,7 +225,7 @@ bash build.sh
 
 ---
 
-## 📜 License
+## License
 
 [MIT](LICENSE) — do whatever you want with it.
 
