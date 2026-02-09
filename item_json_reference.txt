@@ -1,0 +1,458 @@
+=====================================================
+ SCAV MOD MANAGER — COMPLETE ITEM.JSON REFERENCE
+=====================================================
+
+Every possible field you can set in an item.json file.
+Fields you don't include will use sensible defaults.
+
+=====================================================
+ CORE IDENTITY
+=====================================================
+
+id              (string)  Unique item ID. MUST match folder name.
+                          Example: "plasticfork"
+
+name            (string)  Display name shown in-game.
+                          Example: "Plastic Fork"
+
+description     (string)  Tooltip/description text.
+                          Example: "A flimsy but surprisingly deadly fork."
+
+cloneFrom       (string)  Base game item to clone the prefab from.
+                          This determines the 3D model, physics, and animations.
+                          REQUIRED — see "Clone Sources" section below.
+                          Example: "yourknife"
+
+=====================================================
+ GENERAL PROPERTIES
+=====================================================
+
+category        (string)  Item category. Determines inventory sorting.
+                          Valid values:
+                            "tool"         — Tools (knives, axes, etc.)
+                            "utility"      — Utility items (flashlights, guns)
+                            "food"         — Food items
+                            "water"        — Water containers
+                            "medical"      — Medical supplies
+                            "drug"         — Drugs/pharmaceuticals
+                            "container"    — Bags and containers
+                            "trash"        — Junk items
+                            "custom"       — Custom/modded
+                            "unobtainable" — Hidden/debug items
+                          Default: "custom"
+
+weight          (float)   Item weight in kg. Affects inventory space/carry capacity.
+                          Example: 1.5
+                          Default: 1.0
+
+value           (int)     Base trade value. Used by traders.
+                          Example: 50
+                          Default: 0
+
+tags            (string)  Comma-separated tags. Used for crafting and game logic.
+                          Known tags:
+                            "tool"        — General tool
+                            "sharp"       — Sharp object (cutting)
+                            "dressing"    — Medical dressing
+                            "backflip"    — ???
+                            "cangetwet"   — Item can get wet (affects decay)
+                            "gun"         — Firearm
+                            "ammo"        — Ammunition
+                          Example: "tool,sharp"
+                          Default: "" (empty)
+
+slotRotation    (float)   Rotation angle in inventory slot (degrees).
+                          Common values: 0, -45, -90
+                          Default: 0
+
+rotSpeed        (float)   Decay/condition loss speed multiplier.
+                          Higher = decays faster. 0 = no decay.
+                          Used in formula: condition -= rotSpeed * decayMult * deltaTime * 0.01
+                          Default: 0
+
+=====================================================
+ USABILITY FLAGS
+=====================================================
+
+usable          (bool)    Can the item be "used" (right-click/use key)?
+                          Required for food, weapons with use actions, etc.
+                          Default: false
+
+usableWithLMB   (bool)    Can it be used with left mouse button (attack/swing)?
+                          MUST be true for melee weapons to work.
+                          Default: false
+
+usableOnLimb    (bool)    Can it be applied to a body limb? (bandages, splints)
+                          Default: false
+
+autoAttack      (bool)    Does it auto-attack when holding LMB?
+                          MUST be true for weapons to auto-swing.
+                          Default: false
+
+onlyHoldInHands (bool)    Can only be held, not stored in containers?
+                          Default: false
+
+=====================================================
+ COMBAT / WEAPON PROPERTIES
+=====================================================
+
+isWeapon        (bool)    Is this a melee weapon? Enables attack behavior.
+                          Default: false
+
+damage          (float)   Attack damage per hit.
+                          Example: 50.0
+                          Default: 0
+
+structuralDamage (float)  Damage to structures/buildings.
+                          Example: 75.0
+                          Default: 0
+
+knockBack       (float)   Knockback force on hit.
+                          Example: 270.0
+                          Default: 0
+
+cooldown        (float)   Base attack cooldown in seconds.
+                          Actual cooldown = cooldown * 3.5 * attackCooldownMult
+                          Example: 0.4
+                          Default: 0
+
+attackCooldownMult (float) Multiplier on the cooldown formula.
+                          Lower = faster attacks.
+                          Example: 0.75
+                          Default: 1.0
+
+distance        (float)   Attack reach/range.
+                          Example: 5.2
+                          Default: 1.0
+
+staminaUse      (float)   Stamina cost per attack.
+                          Example: 1.65
+                          Default: 0
+
+piercing        (bool)    Does the attack pierce through targets?
+                          Default: false
+
+rotateAmount    (float)   Visual rotation of the swing arc (degrees).
+                          Example: 15.5
+                          Default: 0
+
+volume          (float)   Sound volume of the attack (attracts enemies).
+                          Example: 0.5
+                          Default: 0
+
+physicalSwing   (bool)    Does the weapon do a physical swing animation?
+                          Default: true
+
+doAttackAnim    (bool)    Play the attack animation?
+                          Default: true
+
+metalMoreDamage (bool)    Does extra damage to metal structures?
+                          Default: false
+
+attackAnim      (string)  Attack animation resource name.
+                          Valid values:
+                            "SwingAnim"   — Standard melee swing
+                            "ClawAnim"    — Claw/slash attack
+                            "LaserAnim"   — Laser/beam attack
+                          Default: "SwingAnim"
+
+swingSounds     (string)  Comma-separated sound names played on swing.
+                          Known sounds:
+                            "BSSwing1", "BSSwing2", "BSSwing3", "BSSwing4"
+                            "laser"
+                          Example: "BSSwing1,BSSwing2,BSSwing3,BSSwing4"
+                          Default: "BSSwing1,BSSwing2,BSSwing3,BSSwing4"
+
+=====================================================
+ FOOD / CONSUMABLE PROPERTIES
+=====================================================
+
+isFood          (bool)    Is this a food/consumable item?
+                          Default: false
+
+foodValue       (float)   Hunger restored on use (0-100 scale).
+                          Example: 25.0
+                          Default: 0
+
+waterValue      (float)   Thirst restored on use (0-100 scale).
+                          Example: 15.0
+                          Default: 0
+
+=====================================================
+ LIGHT PROPERTIES
+=====================================================
+
+lightIntensity  (float)   Light brightness. 0 = no light.
+                          Example: 2.5
+                          Default: 0
+
+lightRadius     (float)   Light range/radius.
+                          Example: 8.0
+                          Default: 0
+
+lightColorR     (float)   Light color — Red channel (0.0 to 1.0).
+                          Default: 1.0
+
+lightColorG     (float)   Light color — Green channel (0.0 to 1.0).
+                          Default: 1.0
+
+lightColorB     (float)   Light color — Blue channel (0.0 to 1.0).
+                          Default: 1.0
+
+NOTE: For 360° lights, clone from "roselight".
+      For directional cone lights, clone from "flashlight".
+      Light properties are applied via reflection on the Light2D component.
+
+=====================================================
+ WEARABLE / ARMOR PROPERTIES
+=====================================================
+
+wearable            (bool)    Can this item be worn on the body?
+                              Default: false
+
+desiredWearLimb     (string)  Which body part to wear on.
+                              Valid values:
+                                "Head"      — Head
+                                "UpTorso"   — Upper torso
+                                "ThighF"    — Front thigh
+                                "ThighB"    — Back thigh
+                                "HandF"     — Hands (front)
+                                "DownArmF"  — Lower arm
+                              Default: "" (empty)
+
+wearSlotId          (string)  Specific wear slot for layering.
+                              Valid values:
+                                "hat"         — Head hat slot
+                                "eyes"        — Eyewear slot
+                                "mouth"       — Mouth covering
+                                "blindfold"   — Blindfold slot
+                                "balaclava"   — Full face cover
+                                "neck"        — Neckwear
+                                "back"        — Backpack slot
+                                "torso"       — Inner torso
+                                "outertorso"  — Outer torso (jackets)
+                                "torsofront"  — Front torso (chest rigs)
+                                "bandolier"   — Bandolier slot
+                                "belt"        — Belt slot
+                                "thigh"       — Thigh holster
+                                "thighback"   — Back thigh
+                                "hands"       — Gloves
+                                "arms"        — Arm covers
+                                "wraps"       — Arm wraps
+                                "knees"       — Knee pads
+                                "feet"        — Footwear
+                              Default: "" (empty)
+
+wearableArmor       (float)   Damage reduction when worn (0.0 to 1.0).
+                              Example: 0.3 (30% damage reduction)
+                              Default: 0
+
+wearableIsolation   (float)   Temperature isolation (cold protection).
+                              Higher = warmer.
+                              Default: 0
+
+wearableHitDurabilityLossMultiplier (float)
+                              How fast the item degrades when the wearer is hit.
+                              Default: 0
+
+wearableVisualOffset (int)    Visual layering priority when worn.
+                              Higher = rendered on top of lower values.
+                              Default: 0
+
+jumpHeightMultChange (float)  Modifies jump height when worn.
+                              Example: 0.1 (10% higher jumps)
+                              Default: 0
+
+=====================================================
+ DECAY & CONDITION
+=====================================================
+
+destroyAtZeroCondition (bool) Does the item get destroyed when condition reaches 0?
+                              Default: false
+
+scaleWeightWithCondition (bool) Does weight decrease as condition drops?
+                              Default: false
+
+decayInfo           (int)     Bitfield controlling decay behavior:
+                                0  = Normal decay (uses rotSpeed)
+                                1  = No decay when container is empty
+                                2  = No decay when stored in a container
+                                4  = No decay when player is stationary
+                                16 = Battery-powered (drains battery instead of condition)
+                              Combine with addition: e.g. 3 = bits 1+2
+                              Default: 0
+
+decayMinutes        (float)   Time in minutes for item to fully decay.
+                              Alternative to rotSpeed for time-based decay.
+                              Default: 0
+
+=====================================================
+ CRAFTING & ECONOMY
+=====================================================
+
+combineable     (bool)    Can this item be combined/stacked with identical items?
+                          Default: false
+
+ignoreDepression (bool)   Does using this item ignore the depression debuff?
+                          Mostly for drugs/medicine.
+                          Default: false
+
+intRequirement  (int)     Minimum INT (Intelligence) stat to recognize/identify this item.
+                          If player INT < this value, item appears as "Unknown Item".
+                          Example: 7
+                          Default: 0 (always recognized)
+
+qualities       (string)  Comma-separated crafting quality IDs.
+                          Determines what recipes this item can be used in.
+                          Known quality IDs:
+                            "dressing"    — Medical dressing material
+                            "fabric"      — Fabric/cloth
+                            "metal"       — Metal material
+                            "wood"        — Wood material
+                            "sharp"       — Sharp object
+                            "fire"        — Fire source
+                          Example: "metal,sharp"
+                          Default: "" (empty)
+
+=====================================================
+ CLONE SOURCES — WHAT TO USE
+=====================================================
+
+The "cloneFrom" field determines the base prefab (3D model, physics, animations).
+Your custom sprite replaces the icon, but the in-world appearance comes from the clone.
+
+ Clone From     | Best For                  | Notes
+ ---------------+---------------------------+----------------------------------
+ yourknife      | Small melee weapons       | Knife model, swing anim
+ youraxe        | Heavy melee weapons       | Axe model, heavy swing
+ bread          | Food items                | Small food object
+ roselight      | 360° light sources        | Has Light2D (omnidirectional)
+ flashlight     | Directional lights        | Cone-shaped light beam
+ bag            | Containers/bags           | Has Container component
+ bandage        | Medical items             | Small medical object
+ waterbottle    | Liquid containers         | Has WaterContainerItem
+ pistol         | Guns                      | Has AmmoScript, gun behavior
+ battery        | Battery items             | Has BatteryItem component
+ backpack       | Backpacks                 | Large wearable container
+
+=====================================================
+ EXAMPLE: FULL MELEE WEAPON
+=====================================================
+
+{
+  "id": "battleaxe",
+  "name": "Battle Axe",
+  "description": "A massive battle axe. Swings slow, hits HARD.",
+  "cloneFrom": "youraxe",
+  "category": "tool",
+  "weight": 3.5,
+  "value": 120,
+  "tags": "tool,sharp",
+  "intRequirement": 5,
+
+  "usable": true,
+  "usableWithLMB": true,
+  "autoAttack": true,
+
+  "isWeapon": true,
+  "damage": 85,
+  "structuralDamage": 120,
+  "knockBack": 400,
+  "cooldown": 0.8,
+  "attackCooldownMult": 1.2,
+  "distance": 6.0,
+  "staminaUse": 3.5,
+  "piercing": false,
+  "rotateAmount": 25,
+  "volume": 0.7,
+  "attackAnim": "SwingAnim",
+  "swingSounds": "BSSwing1,BSSwing2,BSSwing3,BSSwing4",
+
+  "destroyAtZeroCondition": true,
+  "rotSpeed": 0.5,
+  "decayInfo": 0,
+
+  "isFood": false,
+  "lightIntensity": 0,
+  "lightRadius": 0,
+  "lightColorR": 1.0,
+  "lightColorG": 1.0,
+  "lightColorB": 1.0,
+
+  "wearable": false
+}
+
+=====================================================
+ EXAMPLE: WEARABLE ARMOR
+=====================================================
+
+{
+  "id": "steelhelm",
+  "name": "Steel Helmet",
+  "description": "Heavy but protective. Your brain thanks you.",
+  "cloneFrom": "yourknife",
+  "category": "utility",
+  "weight": 2.0,
+  "value": 80,
+  "tags": "metal",
+  "intRequirement": 3,
+
+  "wearable": true,
+  "desiredWearLimb": "Head",
+  "wearSlotId": "hat",
+  "wearableArmor": 0.4,
+  "wearableIsolation": 0.2,
+  "wearableVisualOffset": 8,
+  "wearableHitDurabilityLossMultiplier": 0.5,
+  "jumpHeightMultChange": -0.05,
+
+  "destroyAtZeroCondition": true,
+  "rotSpeed": 0.1,
+  "decayInfo": 2,
+
+  "isWeapon": false,
+  "isFood": false,
+  "lightIntensity": 0
+}
+
+=====================================================
+ EXAMPLE: FOOD ITEM
+=====================================================
+
+{
+  "id": "mysteryjerky",
+  "name": "Mystery Jerky",
+  "description": "Don't ask what animal this is from.",
+  "cloneFrom": "bread",
+  "category": "food",
+  "weight": 0.3,
+  "value": 15,
+  "tags": "",
+  "intRequirement": 0,
+
+  "isFood": true,
+  "foodValue": 30,
+  "waterValue": -5,
+
+  "usable": true,
+  "destroyAtZeroCondition": true,
+  "combineable": true,
+  "scaleWeightWithCondition": true,
+  "decayMinutes": 120,
+
+  "isWeapon": false,
+  "lightIntensity": 0
+}
+
+=====================================================
+ NOTES
+=====================================================
+
+- Fields not included in your JSON will use defaults (usually 0/false/"")
+- The "cloneFrom" field is REQUIRED — without it the item has no prefab
+- For weapons: you MUST set usable, usableWithLMB, and autoAttack to true
+- For food: set usable to true so it can be consumed
+- For lights: clone from "roselight" for 360°, "flashlight" for directional
+- intRequirement uses the Recognition system — higher INT = more items visible
+- decayInfo is a BITFIELD — combine values by adding them (e.g., 1+2 = 3)
+- Press F5 in-game to hot reload after editing any item.json

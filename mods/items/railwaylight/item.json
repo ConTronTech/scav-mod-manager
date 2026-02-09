@@ -1,0 +1,42 @@
+{
+    "id": "railwaylight",
+    "name": "Railway Light",
+    "description": "A salvaged railway signal light. Emits a warm red glow in all directions.",
+    "basePrefab": "roselight",
+
+    "weight": 2.0,
+    "value": 45,
+    "category": "utility",
+    "tags": "utility,light",
+    "intRequirement": 2,
+
+    "damage": 25,
+    "structuralDamage": 15,
+    "knockback": 150,
+    "cooldown": 0.4,
+    "cooldownMult": 0.8,
+    "distance": 3.5,
+    "staminaUse": 0.4,
+    "piercing": false,
+    "volume": 0.4,
+    "rotation": 10.0,
+
+    "unbreakable": false,
+    "cuttingQuality": 0,
+
+    "lightIntensity": 2.5,
+    "lightRadius": 12.0,
+    "lightColorR": 1.0,
+    "lightColorG": 0.2,
+    "lightColorB": 0.1,
+
+    "sprite": "sprite.png",
+    "spriteWidth": 8,
+    "spriteHeight": 8,
+    "texWidth": 16,
+    "texHeight": 16,
+
+    "isWeapon": true,
+    "hasUseAction": true,
+    "autoAttack": true
+}

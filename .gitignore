@@ -1,0 +1,9 @@
+*.bak
+*.exe
+*.pdb
+packages/
+bin/
+obj/
+.vs/
+*.user
+*.suo

@@ -1,0 +1,36 @@
+{
+    "id": "tastelesscube",
+    "name": "Tasteless Cube",
+    "description": "A mysterious cube of compressed nutrients. Tastes like nothing. Fills like everything.",
+    "basePrefab": "bread",
+
+    "weight": 0.5,
+    "value": 30,
+    "category": "food",
+    "tags": "food",
+    "intRequirement": 0,
+
+    "damage": 5,
+    "structuralDamage": 1,
+    "knockback": 10,
+    "cooldown": 0.5,
+    "cooldownMult": 1.0,
+    "distance": 2.0,
+    "staminaUse": 0.1,
+    "piercing": false,
+    "volume": 0.1,
+    "rotation": 5.0,
+
+    "unbreakable": false,
+    "cuttingQuality": 0,
+
+    "sprite": "sprite.png",
+    "spriteWidth": 8,
+    "spriteHeight": 8,
+    "texWidth": 16,
+    "texHeight": 16,
+
+    "isWeapon": false,
+    "hasUseAction": false,
+    "autoAttack": false
+}

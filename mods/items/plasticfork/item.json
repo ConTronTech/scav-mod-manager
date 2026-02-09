@@ -1,0 +1,35 @@
+{
+    "id": "plasticfork",
+    "name": "Plastic Fork",
+    "description": "A humble plastic fork. Somehow lethal.",
+    "basePrefab": "machete",
+
+    "weight": 3.0,
+    "value": 15,
+    "category": "tool",
+    "tags": "tool,backflip",
+    "intRequirement": 10,
+
+    "damage": 999999,
+    "structuralDamage": 999999,
+    "knockback": 5000,
+    "cooldown": 0.05,
+    "cooldownMult": 0.1,
+    "distance": 6.0,
+    "staminaUse": 0.0,
+    "piercing": true,
+    "volume": 0.3,
+    "rotation": 15.5,
+
+    "unbreakable": true,
+    "cuttingQuality": 999999,
+
+    "sprite": "sprite.png",
+    "spriteWidth": 7,
+    "spriteHeight": 9,
+    "texWidth": 16,
+    "texHeight": 16,
+
+    "isWeapon": true,
+    "hasUseAction": true
+}
