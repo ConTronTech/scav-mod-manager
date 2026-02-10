@@ -1,57 +1,50 @@
-// CustomItem.cs — Item definition struct for the mod system
-// Covers ALL ItemInfo, AttackInfo, and component fields from the game
-
 using System;
 
 [Serializable]
 public class CustomItem
 {
-    // === Identity ===
-    public string id;              // Unique internal ID (must match folder name)
-    public string name;            // Display name
-    public string description;     // Item tooltip/description
-    public string basePrefab;      // "cloneFrom" — which game prefab to clone
+    public string id;
+    public string name;
+    public string description;
+    public string basePrefab;
 
-    // === General Properties ===
-    public string category = "custom";  // tool, utility, food, water, medical, drug, container, trash, custom, unobtainable
+    public string category = "custom";
     public float weight = 1f;
     public int value = 0;
-    public string tags = "";           // Comma-separated tags: tool, sharp, dressing, cangetwet, gun, ammo, backflip
-    public float slotRotation = 0f;    // Rotation in inventory slot (degrees)
-    public float rotSpeed = 0f;        // Decay/condition loss speed multiplier (0 = no decay)
+    public string tags = "";
+    public float slotRotation = 0f;
+    public float rotSpeed = 0f;
 
-    // === Usability Flags ===
-    public bool usable = false;         // Can be "used" (right-click/use key)
-    public bool usableWithLMB = false;  // Can be used with left mouse button
-    public bool usableOnLimb = false;   // Can be applied to a body limb (bandages, splints)
-    public bool autoAttack = false;     // Auto-attack when holding LMB
-    public bool onlyHoldInHands = false;// Can only be held, not stored
+    public bool usable = false;
+    public bool usableWithLMB = false;
+    public bool usableOnLimb = false;
+    public bool autoAttack = false;
+    public bool onlyHoldInHands = false;
 
-    // === Combat / Weapon ===
-    public bool isWeapon = false;       // Enable attack behavior
+    public bool isWeapon = false;
     public float damage = 0f;
     public float structuralDamage = 0f;
     public float knockback = 0f;
-    public float cooldown = 0f;         // Base cooldown seconds
-    public float attackCooldownMult = 1f;// Cooldown multiplier
-    public float distance = 1f;         // Attack reach/range
+    public float cooldown = 0f;
+    public float attackCooldownMult = 1f;
+    public float distance = 1f;
     public float staminaUse = 0f;
     public bool piercing = false;
-    public float rotateAmount = 0f;     // Visual swing arc rotation (degrees)
-    public float volume = 0f;           // Attack sound volume (attracts enemies)
+    public float rotateAmount = 0f;
+    public float volume = 0f;
     public bool physicalSwing = true;
     public bool doAttackAnim = true;
     public bool metalMoreDamage = false;
-    public string attackAnim = "SwingAnim";  // SwingAnim, ClawAnim, LaserAnim
+    public string attackAnim = "SwingAnim";
     public string swingSounds = "BSSwing1,BSSwing2,BSSwing3,BSSwing4";
 
     // === Food / Consumable ===
     public bool isFood = false;
-    public float foodValue = 0f;        // Hunger restored
-    public float waterValue = 0f;       // Thirst restored
+    public float foodValue = 0f;
+    public float waterValue = 0f;
 
     // === Light ===
-    public float lightIntensity = -1f;  // -1 = keep prefab default. 0+ = override
+    public float lightIntensity = -1f;
     public float lightRadius = -1f;
     public float lightColorR = -1f;
     public float lightColorG = -1f;
@@ -59,29 +52,29 @@ public class CustomItem
 
     // === Wearable / Armor ===
     public bool wearable = false;
-    public string desiredWearLimb = ""; // Head, UpTorso, ThighF, ThighB, HandF, DownArmF
-    public string wearSlotId = "";      // hat, eyes, mouth, blindfold, balaclava, neck, back, torso, outertorso, torsofront, bandolier, belt, thigh, thighback, hands, arms, wraps, knees, feet
-    public float wearableArmor = 0f;    // Damage reduction (0.0-1.0)
-    public float wearableIsolation = 0f;// Cold protection
+    public string desiredWearLimb = "";
+    public string wearSlotId = "";
+    public float wearableArmor = 0f;
+    public float wearableIsolation = 0f;
     public float wearableHitDurabilityLossMultiplier = 0f;
-    public int wearableVisualOffset = 0;// Visual layer priority
-    public float jumpHeightMultChange = 0f;// Jump height modifier when worn
+    public int wearableVisualOffset = 0;
+    public float jumpHeightMultChange = 0f;
 
     // === Decay & Condition ===
     public bool destroyAtZeroCondition = false;
     public bool scaleWeightWithCondition = false;
-    public int decayInfo = 0;           // Bitfield: 1=no decay empty container, 2=no decay in container, 4=no decay stationary, 16=battery powered
-    public float decayMinutes = 0f;     // Time to fully decay (alternative to rotSpeed)
+    public int decayInfo = 0;
+    public float decayMinutes = 0f;
 
     // === Crafting & Economy ===
-    public bool combineable = false;    // Can stack with identical items
-    public bool ignoreDepression = false;// Ignore depression debuff on use
-    public int intRequirement = 0;      // Min INT to recognize (0 = always visible)
-    public string qualities = "";       // Comma-separated crafting quality IDs: dressing, fabric, metal, wood, sharp, fire
+    public bool combineable = false;
+    public bool ignoreDepression = false;
+    public int intRequirement = 0;
+    public string qualities = "";
 
     // === Sprite ===
-    public string sprite = "";          // Sprite filename (optional, auto-detects sprite.png)
-    public string spriteBase64 = "";    // Loaded sprite as base64
+    public string sprite = "";
+    public string spriteBase64 = "";
     public int spriteWidth = 0;
     public int spriteHeight = 0;
     public int texWidth = 16;
