@@ -1,9 +1,3 @@
-// ItemLoader.cs — Handles runtime registration and spawning of custom items
-// Loads items from:
-//   1. Compiled ItemRegistry.cs (built-in items)
-//   2. JSON files from CasualtiesUnknown_Data/mods/items/<id>/item.json (hot-loadable)
-// Called by generic hooks in Assembly-CSharp.dll
-
 using UnityEngine;
 using System;
 using System.IO;
@@ -16,11 +10,8 @@ public static class ItemLoader
     public static Dictionary<string, CustomItem> customItems = new Dictionary<string, CustomItem>();
     private static Dictionary<string, Sprite> spriteCache = new Dictionary<string, Sprite>();
     private static string modsPath;
-
-    // === CALLED FROM PATCHED SetupItems() ===
     public static void RegisterAllCustomItems()
     {
-        // Register log hook before anything else so all messages are captured
         try
         {
             var hookField = typeof(ModManager).GetField("logHookRegistered", BindingFlags.NonPublic | BindingFlags.Static);
@@ -34,8 +25,6 @@ public static class ItemLoader
 
         modsPath = Path.Combine(Application.dataPath, "mods");
         Debug.Log("[ItemLoader] Mods path: " + modsPath);
-
-        // Phase 1: Load compiled registry items
         int compiled = 0;
         foreach (var item in ItemRegistry.Items)
         {
@@ -52,7 +41,6 @@ public static class ItemLoader
             }
         }
 
-        // Phase 2: Scan mods/items/ for JSON definitions
         int loaded = 0;
         string itemsDir = Path.Combine(modsPath, "items");
         if (Directory.Exists(itemsDir))
@@ -81,7 +69,6 @@ public static class ItemLoader
         }
         else
         {
-            // Create the folder structure for the user
             try
             {
                 Directory.CreateDirectory(itemsDir);
@@ -95,20 +82,12 @@ public static class ItemLoader
         }
 
         Debug.Log("[ItemLoader] Registration complete. " + compiled + " compiled + " + loaded + " JSON = " + customItems.Count + " total items.");
-
-        // NOTE: Do NOT re-init loot pool — CorpseScript uses Resources.Load directly
-        // which returns null for custom items (no real prefabs). Custom items are
-        // only available via spawn command / console, not natural loot drops.
-        // To fix natural loot, CorpseScript.Start() would need patching too.
     }
 
-    // === JSON PARSER (no external dependencies — manual parsing) ===
     static CustomItem LoadItemFromJson(string path, string dir)
     {
         string json = File.ReadAllText(path);
         var item = new CustomItem();
-
-        // Simple JSON parser — handles our flat structure
         item.id = GetJsonString(json, "id");
         item.name = GetJsonString(json, "name");
         item.description = GetJsonString(json, "description");
@@ -116,8 +95,6 @@ public static class ItemLoader
         if (string.IsNullOrEmpty(item.basePrefab))
             item.basePrefab = GetJsonString(json, "basePrefab"); // legacy compat
         if (string.IsNullOrEmpty(item.basePrefab)) item.basePrefab = "machete";
-
-        // General properties
         item.category = GetJsonString(json, "category");
         if (string.IsNullOrEmpty(item.category)) item.category = "custom";
         item.weight = GetJsonFloat(json, "weight", 1f);
@@ -125,15 +102,11 @@ public static class ItemLoader
         item.tags = GetJsonString(json, "tags");
         item.slotRotation = GetJsonFloat(json, "slotRotation", 0f);
         item.rotSpeed = GetJsonFloat(json, "rotSpeed", 0f);
-
-        // Usability flags
         item.usable = GetJsonBool(json, "usable", false);
         item.usableWithLMB = GetJsonBool(json, "usableWithLMB", false);
         item.usableOnLimb = GetJsonBool(json, "usableOnLimb", false);
         item.autoAttack = GetJsonBool(json, "autoAttack", false);
         item.onlyHoldInHands = GetJsonBool(json, "onlyHoldInHands", false);
-
-        // Combat / Weapon
         item.isWeapon = GetJsonBool(json, "isWeapon", false);
         item.damage = GetJsonFloat(json, "damage", 0f);
         item.structuralDamage = GetJsonFloat(json, "structuralDamage", 0f);
@@ -153,13 +126,9 @@ public static class ItemLoader
         if (string.IsNullOrEmpty(item.attackAnim)) item.attackAnim = "SwingAnim";
         item.swingSounds = GetJsonString(json, "swingSounds");
         if (string.IsNullOrEmpty(item.swingSounds)) item.swingSounds = "BSSwing1,BSSwing2,BSSwing3,BSSwing4";
-
-        // Food / Consumable
         item.isFood = GetJsonBool(json, "isFood", false);
         item.foodValue = GetJsonFloat(json, "foodValue", 0f);
         item.waterValue = GetJsonFloat(json, "waterValue", 0f);
-
-        // Wearable / Armor
         item.wearable = GetJsonBool(json, "wearable", false);
         item.desiredWearLimb = GetJsonString(json, "desiredWearLimb");
         item.wearSlotId = GetJsonString(json, "wearSlotId");
@@ -168,34 +137,26 @@ public static class ItemLoader
         item.wearableHitDurabilityLossMultiplier = GetJsonFloat(json, "wearableHitDurabilityLossMultiplier", 0f);
         item.wearableVisualOffset = GetJsonInt(json, "wearableVisualOffset", 0);
         item.jumpHeightMultChange = GetJsonFloat(json, "jumpHeightMultChange", 0f);
-
-        // Decay & Condition
         item.destroyAtZeroCondition = GetJsonBool(json, "destroyAtZeroCondition", false);
         item.scaleWeightWithCondition = GetJsonBool(json, "scaleWeightWithCondition", false);
         item.decayInfo = GetJsonInt(json, "decayInfo", 0);
         item.decayMinutes = GetJsonFloat(json, "decayMinutes", 0f);
-
-        // Crafting & Economy
         item.combineable = GetJsonBool(json, "combineable", false);
         item.ignoreDepression = GetJsonBool(json, "ignoreDepression", false);
         item.intRequirement = GetJsonInt(json, "intRequirement", 0);
         item.qualities = GetJsonString(json, "qualities");
-
-        // Sprite — check for sprite file in the item folder
         string spriteFile = GetJsonString(json, "sprite");
         if (!string.IsNullOrEmpty(spriteFile))
         {
             string spritePath = Path.Combine(dir, spriteFile);
             if (File.Exists(spritePath))
             {
-                // Load sprite bytes and store as base64 for our existing pipeline
                 byte[] spriteBytes = File.ReadAllBytes(spritePath);
                 item.spriteBase64 = Convert.ToBase64String(spriteBytes);
                 Debug.Log("[ItemLoader] Loaded sprite: " + spritePath);
             }
             else
             {
-                // Also check mods/sprites/ folder
                 string altPath = Path.Combine(modsPath, "sprites", spriteFile);
                 if (File.Exists(altPath))
                 {
@@ -206,7 +167,6 @@ public static class ItemLoader
             }
         }
 
-        // Also check for sprite.png directly in folder
         if (string.IsNullOrEmpty(item.spriteBase64))
         {
             string defaultSprite = Path.Combine(dir, "sprite.png");
@@ -222,8 +182,6 @@ public static class ItemLoader
         item.spriteHeight = GetJsonInt(json, "spriteHeight", 0);
         item.texWidth = GetJsonInt(json, "texWidth", 16);
         item.texHeight = GetJsonInt(json, "texHeight", 16);
-
-        // Light properties
         item.lightIntensity = GetJsonFloat(json, "lightIntensity", -1f);
         item.lightRadius = GetJsonFloat(json, "lightRadius", -1f);
         item.lightColorR = GetJsonFloat(json, "lightColorR", -1f);
@@ -233,7 +191,6 @@ public static class ItemLoader
         return item;
     }
 
-    // === MINI JSON HELPERS (no Unity JsonUtility for plain classes) ===
     static string GetJsonString(string json, string key)
     {
         string pattern = "\"" + key + "\"";
@@ -256,7 +213,6 @@ public static class ItemLoader
         if (idx < 0) return defaultVal;
         int colonIdx = json.IndexOf(':', idx + pattern.Length);
         if (colonIdx < 0) return defaultVal;
-        // Read number after colon
         int start = colonIdx + 1;
         while (start < json.Length && (json[start] == ' ' || json[start] == '\t')) start++;
         int end = start;
@@ -287,7 +243,6 @@ public static class ItemLoader
         return defaultVal;
     }
 
-    // === ITEM REGISTRATION ===
     static void RegisterItem(CustomItem item)
     {
         var globalItemsField = typeof(Item).GetField("GlobalItems", BindingFlags.Public | BindingFlags.Static);
@@ -305,15 +260,11 @@ public static class ItemLoader
         info.slotRotation = item.slotRotation;
         info.rotSpeed = item.rotSpeed;
         info.rec = new Recognition(item.intRequirement);
-
-        // Usability flags
         info.usable = item.usable;
         info.usableWithLMB = item.usableWithLMB;
         info.usableOnLimb = item.usableOnLimb;
         info.autoAttack = item.autoAttack;
         info.onlyHoldInHands = item.onlyHoldInHands;
-
-        // Wearable
         info.wearable = item.wearable;
         if (!string.IsNullOrEmpty(item.desiredWearLimb)) info.desiredWearLimb = item.desiredWearLimb;
         if (!string.IsNullOrEmpty(item.wearSlotId)) info.wearSlotId = item.wearSlotId;
@@ -322,18 +273,13 @@ public static class ItemLoader
         info.wearableHitDurabilityLossMultiplier = item.wearableHitDurabilityLossMultiplier;
         info.wearableVisualOffset = item.wearableVisualOffset;
         info.jumpHeightMultChange = item.jumpHeightMultChange;
-
-        // Decay & Condition
         info.destroyAtZeroCondition = item.destroyAtZeroCondition;
         info.scaleWeightWithCondition = item.scaleWeightWithCondition;
         info.decayInfo = (byte)item.decayInfo;
         info.decayMinutes = item.decayMinutes;
-
-        // Crafting
         info.combineable = item.combineable;
         info.ignoreDepression = item.ignoreDepression;
 
-        // Qualities
         if (!string.IsNullOrEmpty(item.qualities))
         {
             info.qualities = new List<CraftingQuality>();
@@ -344,7 +290,6 @@ public static class ItemLoader
             }
         }
 
-        // Use action — weapons get attack handler, food gets food handler
         if (item.isWeapon && item.usable)
         {
             try
@@ -393,8 +338,6 @@ public static class ItemLoader
         globalItems[item.id] = info;
     }
 
-    // === ATTACK HANDLER ===
-    // Signature must match ItemInfo.Use delegate: void(Body, Item)
     public static void GenericAttackHandler(Body body, Item weaponItem)
     {
         try
@@ -421,20 +364,13 @@ public static class ItemLoader
             atkInfo.physicalSwing = def.physicalSwing;
             atkInfo.doAttackAnim = def.doAttackAnim;
             atkInfo.metalMoreDamage = def.metalMoreDamage;
-
-            // Load attack animation
             atkInfo.attackAnim = Resources.Load<GameObject>(def.attackAnim);
-
-            // Set swing sounds from comma-separated string
             if (!string.IsNullOrEmpty(def.swingSounds))
                 atkInfo.swingSounds = def.swingSounds.Split(',');
             else
                 atkInfo.swingSounds = new string[] { "BSSwing1", "BSSwing2", "BSSwing3", "BSSwing4" };
-
-            // Body.Attack(AttackInfo, int) — second arg is hand index (0)
+            
             bool hit = body.Attack(atkInfo, 0);
-
-            // Degrade condition on hit
             if (hit && def.rotSpeed > 0)
             {
                 weaponItem.condition -= 0.005f;
@@ -446,8 +382,6 @@ public static class ItemLoader
         }
     }
 
-    // === FOOD HANDLER ===
-    // Signature must match ItemInfo.Use delegate: void(Body, Item)
     public static void GenericFoodHandler(Body body, Item foodItem)
     {
         try
@@ -455,8 +389,6 @@ public static class ItemLoader
             string itemId = foodItem.id;
             if (!customItems.ContainsKey(itemId)) return;
             var def = customItems[itemId];
-
-            // Apply food/water values via Body fields
             if (def.foodValue != 0f)
             {
                 var foodField = typeof(Body).GetField("food", BindingFlags.Public | BindingFlags.Instance);
@@ -476,7 +408,6 @@ public static class ItemLoader
                 }
             }
 
-            // Destroy the item after use (consume it)
             if (def.destroyAtZeroCondition)
             {
                 foodItem.condition = 0f;
@@ -494,7 +425,6 @@ public static class ItemLoader
         }
     }
 
-    // === CALLED FROM PATCHED Ext.Create() ===
     public static GameObject TryCreateCustom(string id, Vector2 position, float rotation)
     {
         if (!customItems.ContainsKey(id)) return null;
@@ -532,16 +462,12 @@ public static class ItemLoader
         }
     }
 
-    // === LIGHT PROPERTIES ===
     static void ApplyLightProperties(GameObject go, CustomItem def)
     {
-        // Only modify if any light property is set
         if (def.lightIntensity < 0 && def.lightRadius < 0 && def.lightColorR < 0) return;
 
         try
         {
-            // Find Light2D component (URP)
-            // Use reflection since we may not have the assembly reference
             var light2dType = System.Type.GetType("UnityEngine.Rendering.Universal.Light2D, Unity.RenderPipelines.Universal.Runtime");
             if (light2dType == null)
             {
@@ -550,7 +476,6 @@ public static class ItemLoader
             }
 
             var lightComp = go.GetComponent(light2dType);
-            // Also check children
             if (lightComp == null)
                 lightComp = go.GetComponentInChildren(light2dType);
 
@@ -568,7 +493,6 @@ public static class ItemLoader
 
             if (def.lightRadius >= 0)
             {
-                // pointLightOuterRadius for point lights
                 var radiusProp = light2dType.GetProperty("pointLightOuterRadius");
                 if (radiusProp != null) radiusProp.SetValue(lightComp, def.lightRadius);
             }
@@ -593,7 +517,6 @@ public static class ItemLoader
         }
     }
 
-    // === SPRITE HANDLING ===
     static void ApplyCustomSprite(GameObject go, CustomItem def)
     {
         if (string.IsNullOrEmpty(def.sprite) && string.IsNullOrEmpty(def.spriteBase64))
@@ -614,7 +537,6 @@ public static class ItemLoader
 
         if (!string.IsNullOrEmpty(def.sprite))
         {
-            // Check item folder first, then mods/sprites/
             string spritePath = Path.Combine(modsPath, "sprites", def.sprite);
             if (File.Exists(spritePath))
             {
@@ -643,7 +565,6 @@ public static class ItemLoader
         return sprite;
     }
 
-    // === HOT RELOAD — re-scan mods folder and re-register all items ===
     public static int HotReload()
     {
         int beforeCount = customItems.Count;
@@ -654,23 +575,18 @@ public static class ItemLoader
         var globalItems = globalItemsField.GetValue(null) as IDictionary<string, ItemInfo>;
         if (globalItems == null) { Debug.LogError("[ItemLoader] HotReload: GlobalItems is null"); return 0; }
 
-        // Clear existing custom items from GlobalItems
         foreach (var id in customItems.Keys)
         {
             if (globalItems.ContainsKey(id))
                 globalItems.Remove(id);
         }
+        
         customItems.Clear();
         spriteCache.Clear();
-
-        // Re-register everything
         RegisterAllCustomItems();
-
         int newItems = customItems.Count - beforeCount;
         Debug.Log("[ItemLoader] Hot reload complete. " + customItems.Count + " items total. " + 
             (newItems > 0 ? newItems + " new items." : "No new items."));
-
-        // NOTE: Loot pool re-init disabled — see RegisterAllCustomItems() comment
 
         return customItems.Count;
     }
