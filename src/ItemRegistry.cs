@@ -1,7 +1,3 @@
-// ItemRegistry.cs — Compiled custom items (always loaded)
-// For hot-loadable items, use mods/items/<id>/item.json instead
-// Items here are loaded FIRST, then JSON items override/add to them
-
 using System.Collections.Generic;
 
 public static class ItemRegistry
