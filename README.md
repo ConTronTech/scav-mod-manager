@@ -1,6 +1,7 @@
 <div align="center">
 
 # Scav Mod Manager
+# Please Keep In Mind Its A Hobby Project THERE WILL BE ISSUES
 
 ### A mod manager & custom item framework for Scav Prototype: Casualties Unknown
 
